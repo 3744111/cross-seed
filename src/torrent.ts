@@ -3,7 +3,7 @@ import Fuse from "fuse.js";
 import fetch, { Response } from "node-fetch";
 import path, { join } from "path";
 import { inspect } from "util";
-import { USER_AGENT } from "./constants.js";
+import { USER_AGENT, Action } from "./constants.js";
 import { db } from "./db.js";
 import { CrossSeedError } from "./errors.js";
 import { logger, logOnce } from "./logger.js";
@@ -166,6 +166,18 @@ export async function getInfoHashesToExclude(): Promise<string[]> {
 	return (await db("torrent").select({ infoHash: "info_hash" })).map(
 		(t) => t.infoHash
 	);
+}
+
+export async function validateAction(): Promise<void> {
+	const { action } = getRuntimeConfig();
+	if (
+		action.toLowerCase() !== Action.INJECT &&
+		action.toLowerCase() !== Action.SAVE
+	) {
+		throw new CrossSeedError(
+			`Action method "${action}" is invalid. Allowed choices are "save" and "inject".`
+		);
+	}
 }
 
 export async function validateTorrentDir(): Promise<void> {
