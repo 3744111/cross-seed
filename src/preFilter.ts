@@ -10,8 +10,12 @@ import { humanReadable, nMsAgo, stripExtension } from "./utils.js";
 import path from "path";
 
 export function filterByContent(searchee: Searchee): boolean {
-	const { includeEpisodes, includeNonVideos, includeSingleEpisodes, includeDaily } =
-		getRuntimeConfig();
+	const {
+		includeEpisodes,
+		includeNonVideos,
+		includeSingleEpisodes,
+		includeDaily,
+	} = getRuntimeConfig();
 
 	function logReason(reason): void {
 		logger.verbose({
@@ -27,10 +31,15 @@ export function filterByContent(searchee: Searchee): boolean {
 		searchee.files.length === 1 &&
 		SEASON_REGEX.test(path.basename(path.dirname(searchee.path)));
 
-	if (includeEpisodes && !includeDaily && isSingleEpisodeTorrent && !isSeasonPackEpisode){
+	if (
+		includeEpisodes &&
+		!includeDaily &&
+		isSingleEpisodeTorrent &&
+		!isSeasonPackEpisode
+	) {
 		const match = stripExtension(searchee.name).match(EP_REGEX);
-		if(match.groups.date) {
-			logReason("it is a daily episode")
+		if (match.groups.date) {
+			logReason("it is a daily episode");
 			return false;
 		}
 	}
