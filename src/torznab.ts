@@ -114,7 +114,11 @@ function createTorznabSearchQuery(name: string, caps: Caps) {
 		const match = nameWithoutExtension.match(EP_REGEX);
 		return {
 			t: "tvsearch",
-			q: cleanseSeparators(match.groups.title),
+			q: [
+				cleanseSeparators(match.groups.title),
+				match.groups.resolution,
+				match.groups.group,
+			].join(" "),
 			season: match.groups.season
 				? extractNumber(match.groups.season)
 				: match.groups.year,
@@ -126,7 +130,11 @@ function createTorznabSearchQuery(name: string, caps: Caps) {
 		const match = nameWithoutExtension.match(SEASON_REGEX);
 		return {
 			t: "tvsearch",
-			q: cleanseSeparators(match.groups.title),
+			q: [
+				cleanseSeparators(match.groups.title),
+				match.groups.resolution,
+				match.groups.group,
+			].join(" "),
 			season: extractNumber(match.groups.season),
 		} as const;
 	} else {
