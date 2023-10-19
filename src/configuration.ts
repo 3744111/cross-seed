@@ -13,6 +13,7 @@ interface FileConfig {
 	configVersion?: number;
 	delay?: number;
 	includeEpisodes?: boolean;
+	includeDaily?: boolean;
 	includeSingleEpisodes?: boolean;
 	outputDir?: string;
 	rtorrentRpcUrl?: string;

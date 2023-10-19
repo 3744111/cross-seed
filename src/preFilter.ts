@@ -6,11 +6,11 @@ import { getEnabledIndexers } from "./indexers.js";
 import { Label, logger } from "./logger.js";
 import { getRuntimeConfig } from "./runtimeConfig.js";
 import { Searchee } from "./searchee.js";
-import { humanReadable, nMsAgo } from "./utils.js";
+import { humanReadable, nMsAgo, stripExtension } from "./utils.js";
 import path from "path";
 
 export function filterByContent(searchee: Searchee): boolean {
-	const { includeEpisodes, includeNonVideos, includeSingleEpisodes } =
+	const { includeEpisodes, includeNonVideos, includeSingleEpisodes, includeDaily } =
 		getRuntimeConfig();
 
 	function logReason(reason): void {
@@ -26,6 +26,14 @@ export function filterByContent(searchee: Searchee): boolean {
 		searchee.path &&
 		searchee.files.length === 1 &&
 		SEASON_REGEX.test(path.basename(path.dirname(searchee.path)));
+
+	if (includeEpisodes && !includeDaily && isSingleEpisodeTorrent && !isSeasonPackEpisode){
+		const match = stripExtension(searchee.name).match(EP_REGEX);
+		if(match.groups.date) {
+			logReason("it is a daily episode")
+			return false;
+		}
+	}
 
 	if (
 		!includeEpisodes &&
